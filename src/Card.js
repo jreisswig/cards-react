@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components/macro'
+import Button from './Button'
 
 const CardWrapper = styled.section`
   position: relative;
@@ -12,12 +13,36 @@ const CardWrapper = styled.section`
 const Cardtext = styled.p`
   font-weight: ${props => props.fontWeight};
 `
+const Answer = styled.p`
+  animation: fadeIn;
+  animation-duration: 3000ms;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`
 
 export default function Card({ question, answer }) {
+  const [isHidden, setIsHidden] = useState(true)
+
   return (
     <CardWrapper>
       <Cardtext fontWeight="bold">{question}</Cardtext>
-      <Cardtext>{answer}</Cardtext>
+      {!isHidden && <Answer>{answer}</Answer>}
+
+      <Button onClick={toggleIsHidden}>
+        {' '}
+        {isHidden ? 'Show Answer' : 'Hide Answer'}
+      </Button>
     </CardWrapper>
   )
+
+  function toggleIsHidden() {
+    setIsHidden(!isHidden)
+  }
 }
