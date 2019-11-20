@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components/macro'
 import Button from './Button'
+import Bookmark from './Bookmark'
 
 const CardWrapper = styled.section`
   position: relative;
@@ -27,11 +28,20 @@ const Answer = styled.p`
   }
 `
 
-export default function Card({ question, answer }) {
+export default function Card({
+  question,
+  answer,
+  isBookmarked,
+  toggleBookmarked,
+}) {
   const [isHidden, setIsHidden] = useState(true)
 
   return (
     <CardWrapper>
+      <Bookmark
+        onClick={toggleBookmarked}
+        color={isBookmarked ? 'black' : 'lightgrey'}
+      ></Bookmark>
       <Cardtext fontWeight="bold">{question}</Cardtext>
       {!isHidden && <Answer>{answer}</Answer>}
 

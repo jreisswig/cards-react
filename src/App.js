@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import cardData from './cards.json'
-import GlobalStyles from './GlobalStyles'
+
 import Card from './Card'
 import styled from 'styled-components/macro'
 
@@ -12,16 +12,32 @@ const CardContainer = styled.div`
 `
 
 function App() {
+  const [cards, setCards] = useState(cardData)
+
   return (
     <div>
-      <GlobalStyles />
       <CardContainer>
-        {cardData.map((card, index) => (
-          <Card question={card.question} answer={card.answer} key={index} />
+        {cards.map((card, index) => (
+          <Card
+            question={card.question}
+            answer={card.answer}
+            key={index}
+            isBookmarked={card.isBookmarked}
+            toggleBookmarked={() => toggleBookmarked(index)}
+          />
         ))}
       </CardContainer>
     </div>
   )
+
+  function toggleBookmarked(index) {
+    const card = cards[index]
+    setCards([
+      ...cards.slice(0, index),
+      { ...card, isBookmarked: !card.isBookmarked },
+      ...cards.slice(index + 1),
+    ])
+  }
 }
 
 export default App
