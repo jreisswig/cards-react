@@ -1,67 +1,45 @@
-import React, { useState } from 'react'
-import cardData from './cards.json'
-import FilterBookmark from './FilterBookmark'
-import Card from './Card'
-import styled from 'styled-components/macro'
+import React from 'react'
+import Home from './Home'
 
-function App() {
-  const [cards, setCards] = useState(cardData)
-  const [isOnlyBookmarksShown, setisOnlyBookmarksShown] = useState(false)
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
+export default function App() {
   return (
-    <div>
-      <FilterBookmark onClick={filterBookmarkedCards}>
-        {isOnlyBookmarksShown ? 'Show bookmarked cards' : 'Show all Cards'}{' '}
-      </FilterBookmark>
-      {!isOnlyBookmarksShown ? (
-        <CardContainer>
-          {cards.map((card, index) => (
-            <Card
-              question={card.question}
-              answer={card.answer}
-              key={index}
-              isBookmarked={card.isBookmarked}
-              toggleBookmarked={() => toggleBookmarked(index)}
-            />
-          ))}
-        </CardContainer>
-      ) : (
-        <CardContainer>
-          {cards
-            .filter(card => card.isBookmarked === true)
-            .map((card, index) => (
-              <Card
-                question={card.question}
-                answer={card.answer}
-                key={index}
-                isBookmarked={card.isBookmarked}
-                toggleBookmarked={() => toggleBookmarked(index)}
-              />
-            ))}
-        </CardContainer>
-      )}
-    </div>
-  )
+    <Router>
+      <div>
+        <nav><Button>
+              <Link to="/">Home</Link></Button>
+            <li>
+              <Link to="/create">Create</Link>
+            </li>
+          </ul>
+        </nav>
 
-  function filterBookmarkedCards() {
-    setisOnlyBookmarksShown(!isOnlyBookmarksShown)
-  }
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route path="/create">
+            <h1> Hello </h1>
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
 
-  function toggleBookmarked(index) {
-    const card = cards[index]
-    setCards([
-      ...cards.slice(0, index),
-      { ...card, isBookmarked: !card.isBookmarked },
-      ...cards.slice(index + 1),
-    ])
-  }
+    /*  local Storage???
+
+function saveTodos() {
+  localStorage.setItem('todos', JSON.stringify(todos))
 }
-
-const CardContainer = styled.div`
-  display: grid;
-  gap: 20px;
-  padding: 20px;
-  overflow: scroll;
-`
-
-export default App
+function loadTodos() {
+  const todoJSON = localStorage.getItem('todos')
+  try {
+    return JSON.parse(todoJSON)
+} catch (error) {
+  //wenn nichts drin steht kommt trotzdem undefined
+}
+} */
+  )
+}
