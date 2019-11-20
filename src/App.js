@@ -7,8 +7,11 @@ export default function App() {
   return (
     <Router>
       <div>
-        <nav><Button>
-              <Link to="/">Home</Link></Button>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
             <li>
               <Link to="/create">Create</Link>
             </li>
@@ -27,19 +30,5 @@ export default function App() {
         </Switch>
       </div>
     </Router>
-
-    /*  local Storage???
-
-function saveTodos() {
-  localStorage.setItem('todos', JSON.stringify(todos))
-}
-function loadTodos() {
-  const todoJSON = localStorage.getItem('todos')
-  try {
-    return JSON.parse(todoJSON)
-} catch (error) {
-  //wenn nichts drin steht kommt trotzdem undefined
-}
-} */
   )
 }

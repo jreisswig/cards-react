@@ -1,12 +1,22 @@
 import React, { useState } from 'react'
-import cardData from './cards.json'
+//import cardData from './cards.json'
 import FilterBookmark from './FilterBookmark'
 import Card from './Card'
 import styled from 'styled-components/macro'
 
 export default function Home() {
-  const [cards, setCards] = useState(cardData)
+  let saveData = JSON.parse(localStorage.saveData || null) || {}
+  const [cards, setCards] = useState(saveData) // es werden die Daten aus dem saveDate genommen.
   const [isOnlyBookmarksShown, setisOnlyBookmarksShown] = useState(false)
+
+  // Local Storage
+  saveStuff(cards)
+  // Store your data.
+  function saveStuff(cards) {
+    saveData = cards
+    saveData.time = new Date().getTime()
+    localStorage.saveData = JSON.stringify(saveData)
+  }
 
   return (
     <div>
