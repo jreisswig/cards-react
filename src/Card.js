@@ -47,7 +47,7 @@ export default function Card({
 
       <Button onClick={toggleIsHidden}>
         {' '}
-        {isHidden ? 'Show Answer' : 'Hide Answer'}
+        {isHidden ? 'Show answer' : 'Hide answer'}
       </Button>
     </CardWrapper>
   )

@@ -1,55 +1,59 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 //import cardData from './cards.json'
 import FilterBookmark from './FilterBookmark'
 import Card from './Card'
 import styled from 'styled-components/macro'
+import { getCards, patchCard } from './services.js'
 
 export default function Home() {
-  let saveData = JSON.parse(localStorage.saveData || null) || {}
-  const [cards, setCards] = useState(saveData) // es werden die Daten aus dem saveDate genommen.
+  // const saveData = JSON.parse(localStorage.saveData) || []
+  const [cards, setCards] = useState([]) // es werden die Daten aus dem saveDate genommen.
   const [isOnlyBookmarksShown, setisOnlyBookmarksShown] = useState(false)
 
   // Local Storage
-  saveStuff(cards)
   // Store your data.
-  function saveStuff(cards) {
-    saveData = cards
-    saveData.time = new Date().getTime()
-    localStorage.saveData = JSON.stringify(saveData)
-  }
+  // function saveStuff(cards) {
+  //   saveData = cards
+  //   saveData.time = new Date().getTime()
+  //   localStorage.saveData = JSON.stringify(saveData)
+  // }
+
+  //drei möglichkeiten
+  //useEffect(() => {
+  // console.log('This is called on every change')
+  //wird aufgerufen, wenn sich irgendwas ändert, state oder prop
+  // })
+  useEffect(() => {
+    getCards().then(setCards)
+    console.log('This is called once')
+  }, [])
+
+  // useEffect(() => saveStuff(cards), [cards])
+  //wird aufgerufen, wenn sich einnal was ändert, einmal am anfan gun dnie wieder
+
+  // useEffect(() => {
+  //  console.log('cards have changed')
+  //wird aufgerufen, wenn sich an der card was ändert
+  // }, [cards])
 
   return (
     <div>
       <FilterBookmark onClick={filterBookmarkedCards}>
-        {isOnlyBookmarksShown ? 'Show bookmarked cards' : 'Show all Cards'}{' '}
+        {isOnlyBookmarksShown ? 'Show all Cards' : 'Show bookmarked cards'}{' '}
       </FilterBookmark>
-      {!isOnlyBookmarksShown ? (
-        <CardContainer>
-          {cards.map((card, index) => (
+      <CardContainer>
+        {cards
+          .filter(card => (isOnlyBookmarksShown ? card.isBookmarked : true))
+          .map(({ _id, answer, question, isBookmarked }) => (
             <Card
-              question={card.question}
-              answer={card.answer}
-              key={index}
-              isBookmarked={card.isBookmarked}
-              toggleBookmarked={() => toggleBookmarked(index)}
+              question={question}
+              answer={answer}
+              key={_id}
+              isBookmarked={isBookmarked}
+              toggleBookmarked={() => toggleBookmarked(_id)}
             />
           ))}
-        </CardContainer>
-      ) : (
-        <CardContainer>
-          {cards
-            .filter(card => card.isBookmarked === true)
-            .map((card, index) => (
-              <Card
-                question={card.question}
-                answer={card.answer}
-                key={index}
-                isBookmarked={card.isBookmarked}
-                toggleBookmarked={() => toggleBookmarked(index)}
-              />
-            ))}
-        </CardContainer>
-      )}
+      </CardContainer>
     </div>
   )
 
@@ -57,13 +61,19 @@ export default function Home() {
     setisOnlyBookmarksShown(!isOnlyBookmarksShown)
   }
 
-  function toggleBookmarked(index) {
+  function toggleBookmarked(id) {
+    const index = cards.findIndex(card => card._id === id)
     const card = cards[index]
-    setCards([
-      ...cards.slice(0, index),
-      { ...card, isBookmarked: !card.isBookmarked },
-      ...cards.slice(index + 1),
-    ])
+    patchCard({
+      id: card._id,
+      isBookmarked: !card.isBookmarked,
+    }).then(updatedCard => {
+      setCards([
+        ...cards.slice(0, index),
+        updatedCard,
+        ...cards.slice(index + 1),
+      ])
+    })
   }
 }
 
