@@ -1,45 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Home from './Home'
+import Nav from './Nav'
+import Create from './Create'
+import cardData from './cards.json'
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
 export default function App() {
+  const [cards, setCards] = useState(cardData)
+
+  function toggleBookmarked(index) {
+    const card = cards[index]
+    setCards([
+      ...cards.slice(0, index),
+      { ...card, isBookmarked: !card.isBookmarked },
+      ...cards.slice(index + 1),
+    ])
+  }
+
   return (
     <Router>
-      <div>
-        <nav><Button>
-              <Link to="/">Home</Link></Button>
-            <li>
-              <Link to="/create">Create</Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/create">
-            <h1> Hello </h1>
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </div>
+      <Nav
+        items={[
+          { path: '/', text: 'Hello' },
+          { path: '/create', text: 'Create' },
+        ]}
+      />
+      <Switch>
+        <Route exact path="/">
+          <Home cards={cards} toggleBookmarked={toggleBookmarked} />
+        </Route>
+        <Route path="/create">
+          <Create />
+        </Route>
+      </Switch>
     </Router>
-
-    /*  local Storage???
-
-function saveTodos() {
-  localStorage.setItem('todos', JSON.stringify(todos))
-}
-function loadTodos() {
-  const todoJSON = localStorage.getItem('todos')
-  try {
-    return JSON.parse(todoJSON)
-} catch (error) {
-  //wenn nichts drin steht kommt trotzdem undefined
-}
-} */
   )
 }

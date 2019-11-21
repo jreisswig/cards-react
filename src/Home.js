@@ -1,17 +1,22 @@
 import React, { useState } from 'react'
-import cardData from './cards.json'
+
 import FilterBookmark from './FilterBookmark'
 import Card from './Card'
 import styled from 'styled-components/macro'
 
-export default function Home() {
-  const [cards, setCards] = useState(cardData)
+export default function Home({
+  cards,
+  toggleBookmarked,
+  filterBookmarkedCards,
+}) {
   const [isOnlyBookmarksShown, setisOnlyBookmarksShown] = useState(false)
-
+  function filterBookmarkedCards() {
+    setisOnlyBookmarksShown(!isOnlyBookmarksShown)
+  }
   return (
     <div>
       <FilterBookmark onClick={filterBookmarkedCards}>
-        {isOnlyBookmarksShown ? 'Show bookmarked cards' : 'Show all Cards'}{' '}
+        {isOnlyBookmarksShown ? 'Show all Cards' : 'Show bookmarked cards'}
       </FilterBookmark>
       {!isOnlyBookmarksShown ? (
         <CardContainer>
@@ -42,19 +47,6 @@ export default function Home() {
       )}
     </div>
   )
-
-  function filterBookmarkedCards() {
-    setisOnlyBookmarksShown(!isOnlyBookmarksShown)
-  }
-
-  function toggleBookmarked(index) {
-    const card = cards[index]
-    setCards([
-      ...cards.slice(0, index),
-      { ...card, isBookmarked: !card.isBookmarked },
-      ...cards.slice(index + 1),
-    ])
-  }
 }
 
 const CardContainer = styled.div`
